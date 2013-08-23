@@ -84,7 +84,7 @@ symgrp_numset(VALUE self, VALUE num)
 
 // tenntousuu
 static VALUE
-symgrp_inversion_number(int argc, VALUE *argv, VALUE obj)
+symgrp_inversion_number(int argc, VALUE *argv, VALUE self)
 {
   int i,j, flag=0;
   
@@ -98,6 +98,26 @@ symgrp_inversion_number(int argc, VALUE *argv, VALUE obj)
   }
   
   return INT2FIX(flag);
+}
+
+static VALUE
+symgrp_inversion(int argc, VALUE *argv, VALUE obj)
+{
+  VALUE ary;
+  long len;
+  int i,j;
+  
+  len = argc;
+  ary = rb_ary_new2(len);
+  for(i = 1; i <= len; i++)
+    for(j = 1; j <= len; j++){
+      //      printf("i=%d argv[j-1]=%d\n", i,  FIX2INT(argv[j-1]));
+      if(i == FIX2INT(argv[j-1])){	
+	rb_ary_push(ary, INT2FIX(j));
+	break;
+      }  
+    }
+  return ary;
 }
 
 static VALUE
@@ -163,9 +183,10 @@ void Init_symgrp(void)
   rb_define_method(cSymgrp, "new" , symgrp_new, 0);
   rb_define_method(cSymgrp, "num", symgrp_numref, 0);
   rb_define_method(cSymgrp, "set", symgrp_numset, 1);
-  rb_define_method(cSymgrp, "inv", symgrp_inversion_number, -1);
+  rb_define_method(cSymgrp, "invnum", symgrp_inversion_number, -1);
   rb_define_method(cSymgrp, "sig", symgrp_signature, -1);
   rb_define_method(cSymgrp, "permute?", symgrp_permute_p, -1);
   rb_define_method(cSymgrp, "cyclic?", symgrp_cyclic_p, -1);
+  rb_define_method(cSymgrp, "inv", symgrp_inversion, -1);
 }
 
